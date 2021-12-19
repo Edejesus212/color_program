@@ -1,0 +1,188 @@
+var currentColor = color(247, 247, 247); // Red, Blue, Green
+var currentScene = 1; //1 = splash 2 = bitmoji coloring screen
+
+ 
+//what allows for buttons.
+ var Button = function(config) {
+    this.x = config.x || 0;
+    this.y = config.y || 0;
+    this.width = config.width || 150;
+    this.height = config.height || 50;
+    this.label = config.label || "Click";
+    this.onClick = config.onClick || function() {};
+};
+// size, width and shape of the buttons
+Button.prototype.draw = function() {
+    fill(250, 250, 250);
+    rect(this.x, this.y, this.width, this.height, 5);
+    fill(0, 0, 0);
+    textSize(19);
+    textAlign(LEFT, TOP);
+    text(this.label, this.x+10, this.y+this.height/4);
+};
+//creates the space where you can click on the button
+Button.prototype.isMouseInside = function() {
+    return mouseX > this.x &&
+           mouseX < (this.x + this.width) &&
+           mouseY > this.y &&
+           mouseY < (this.y + this.height);
+};
+
+//applys functionality to specific buttons
+Button.prototype.handleMouseClick = function() {
+    if (this.isMouseInside()) {
+        this.onClick();
+    }
+};
+//obeject-oreintation for bitmoji's postion
+var Bitmoji = function(bitmojiX, bitmojiY,bitmojiH) {
+    this.bitmojiX =  195;
+    this.bitmojiY =  bitmojiY;
+    this.bitmojiH = 200;
+
+};
+
+// code to call the bitmoji
+
+ Bitmoji.prototype.draw = function (){
+    fill (247, 245, 242);//fill to skin tone
+    ellipse(this.bitmojiX , this.bitmojiY,83 , 100); //head
+    fill(255, 255, 255);// fill for chisel
+    fill(247, 244, 247); // black hair
+    quad(this.bitmojiX - 50,  this.bitmojiY - 12, this.bitmojiX - 41 , this.bitmojiY - 30 , this.bitmojiX - 10,  this.bitmojiY-50, this.bitmojiX - 38,  this.bitmojiY - 1); //left hair
+    quad(this.bitmojiX + 44 ,  this.bitmojiY - 13, this.bitmojiX + 34 ,  this.bitmojiY - 32, this.bitmojiX + 13,  this.bitmojiY - 50, this.bitmojiX + 31,  this.bitmojiY - 4); // right hair
+    ellipse(this.bitmojiX ,  this.bitmojiY - 37, 69, 28); // top hair
+    fill(252, 252, 252);// eye color
+    ellipse(this.bitmojiX - 18,  this.bitmojiY - 1, 10, 11);//left eye
+    ellipse(this.bitmojiX + 14,  this.bitmojiY - 1, 10, 11);// right eye
+    fill (242, 240, 237);
+    stroke(0, 0, 0);
+    bezier(this.bitmojiX,  this.bitmojiY, this.bitmojiX + 21,  this.bitmojiY + 22, this.bitmojiX - 8,  this.bitmojiY + 21, this.bitmojiX - 4 , this.bitmojiY + 11);
+    fill(255, 255, 255);// fill for teeth
+    arc(this.bitmojiX,  this.bitmojiY + 25, 30, 13, 1, 180);// mouth
+    line(this.bitmojiX - 16,  this.bitmojiY + 24, this.bitmojiX + 15,  this.bitmojiY + 24); // top of mouth
+    fill(252, 252, 252); // shirt color
+    // code to change the bitmoji's clothes
+    if (this.bitmojiX < 300) {
+        fill(243, 242, 247);
+    }
+    quad(this.bitmojiX - 45,  this.bitmojiY + 137, this.bitmojiX + 64, this.bitmojiY + 143, this.bitmojiX + 37,  this.bitmojiY + 53, this.bitmojiX - 37,  this.bitmojiY + 49);// shirt
+    fill(0, 255, 34);// text color
+    
+};
+
+
+var bitmojiBlack = new Bitmoji (65, 161); // code for the colorless bitmoji
+
+//code for the Red color button
+
+var redButton = new Button({
+    x: 304,
+    y: 300,
+    label: "Red",
+    onClick: function() {
+       
+        currentColor = color(255, 0, 0);
+    }
+});
+
+
+//code for the Blue color button
+
+var blueButton = new Button({
+    x: 303,
+    y: 200,
+    label: "Blue",
+    onClick: function() {
+        currentScene = 2;
+        currentColor = color(17, 0, 255);
+    }
+    });
+
+//code for the Green color button
+
+var greenButton = new Button({
+    x: 304,
+    y: 100,
+    label: "Green",
+    onClick: function() {
+        currentScene = 2;
+        currentColor = color(0, 255, 38);
+    }
+    });
+//code for the black color button
+    var blackButton = new Button({
+    x: 304,
+    y: 40,
+    label: "Black",
+    onClick: function() {
+        currentScene = 2;
+        currentColor = color(8, 8, 8);
+    }
+    });
+
+//code for the 2nd scene
+var bitmojiTemp = function () {
+    background(247, 247, 247);
+    fill(255, 255, 255);
+    textSize(337);
+    text("" ,22, -12);
+    redButton.draw();
+    blueButton.draw();
+    greenButton.draw();
+    blackButton.draw();
+     bitmojiBlack.draw();
+};
+
+ //code for the start button
+ 
+var startButton = new Button({
+    x: 125,
+    y: 322,
+    label: "        Begin",
+    onClick: function() {
+        currentScene = 2;
+        bitmojiTemp();
+    }
+});
+
+
+
+//function for the splash screen
+var splash = function () {
+    background(10, 10, 10);
+    fill(255, 255, 255);
+    textSize(30);
+    text("Welcome to Color the Bitmoji" ,6, 24);
+    textSize(14);
+     text("The game where you color in this bitmoji!!! be creative!!" ,9, 86);
+      
+     startButton.draw();
+    bitmojiBlack.draw(); //code to call the bitmoji
+};
+
+//function to make the brush
+
+draw = function()
+    {
+   if (currentScene === 1){splash();}
+   else
+   {
+       if (mouseIsPressed) {
+           noStroke();
+           fill(currentColor);
+           ellipse (mouseX, mouseY, 10, 10);}
+   }
+};
+   
+//Allows for the buttons to have functionality
+mouseClicked = function() {
+    startButton.handleMouseClick();
+    redButton.handleMouseClick();
+    blueButton.handleMouseClick();
+    greenButton.handleMouseClick();
+    blackButton.handleMouseClick();
+};
+
+//Draws the 2nd scene
+bitmojiTemp();
